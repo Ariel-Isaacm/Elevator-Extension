@@ -3,6 +3,17 @@
  * @author : Ram swaroop
  * @site   : Compzets.com
  */
+const mainAudio = new Audio("https://raw.githubusercontent.com/Ariel-Isaacm/Elevator-Extension/master/elevator.mp3");
+const endAudio = new Audio("https://raw.githubusercontent.com/Ariel-Isaacm/Elevator-Extension/master/ding.mp3");
+ var button = document.createElement("button");
+ button.innerHTML  = "Lets go up!";
+ button.setAttribute("class","fixedButtonElevator");
+ button.onclick = ()=>{
+   $('html').animatescroll({easing:'easeOutQuad'});
+ };
+
+ document.body.appendChild(button);
+
 (function($){
 
     // defines various easing effects
@@ -140,9 +151,7 @@
     });
 
     $.fn.animatescroll = function(options) {
-        const startPosition = window.scrollY;
-        const mainAudio = document.querySelector('audio[data-key="main"]');
-        const endAudio = document.querySelector('audio[data-key="end"]');
+      let position = document.documentElement.scrollTop
         mainAudio.play();
         // fetches options
         var opts = $.extend({},$.fn.animatescroll.defaults,options);
@@ -152,19 +161,15 @@
             // brings the scope to the callback
             opts.onScrollStart.call(this);
         }
-        console.log(opts.scrollSpeed);
-        opts.scrollSpeed = startPosition *10;
-
 
         if(opts.element == "html,body") {
             // Get the distance of particular id or class from top
             var offset = this.offset().top;
-
             // Scroll the page to the desired position
             $(opts.element).stop().animate({
                scrollTop: offset - opts.padding
              }, {
-               duration:opts.scrollSpeed,
+               duration:position *1.5,
                complete: ()=>{
                  mainAudio.pause();
                  mainAudio.currentTime = 0;
@@ -177,20 +182,13 @@
             $(opts.element).stop().animate(
               { scrollTop: this.offset().top - this.parent().offset().top + this.parent().scrollTop() - opts.padding}
               ,{
-              duration:opts.scrollSpeed,
+              duration:position *1.5,
               complete: ()=>{
                 mainAudio.stop();
                 mainAudio.currentTime = 0;
                 endAudio.play();
               }
-            },
-              opts.easing,
-
-              {complete:()=>
-              {
-                console.log("finished");
-              }
-            });
+            },opts.easing);
         }
 
         setTimeout(function() {
